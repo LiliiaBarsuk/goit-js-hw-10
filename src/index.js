@@ -2,7 +2,7 @@ import './css/styles.css';
 const DEBOUNCE_DELAY = 300;
 
 import debounce from 'lodash.debounce';
-
+import Notiflix from 'notiflix';
 import createCountryMarkup from './js/create-country-markup.js'
 import createListOfCountryMarkup from './js/create-list.js'
 import fetchCountries  from './js/fetchCountries.js';
@@ -31,16 +31,16 @@ function start(event) {
         }
         else if (country.length > 10) {
             clearAll()
-            console.log("Too many matches found. Please enter a more specific name.");
+            Notiflix.Notify.info('Too many matches found. Please enter a more specific name.');
         }
         else {
             clearAll()
-            console.log("Oops, there is no country with that name");
+            Notiflix.Notify.failure('Oops, there is no country with that name');
         }
         
     }).catch(error => {
         clearAll()
-        console.log("Oops, there is no country with that name");
+        Notiflix.Notify.failure('Oops, there is no country with that name');
      
     })
 }
