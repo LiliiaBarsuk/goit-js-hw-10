@@ -1,32 +1,26 @@
-
+import './css/styles.css';
 const DEBOUNCE_DELAY = 300;
 
-var debounce = require('lodash.debounce');
+import debounce from 'lodash.debounce';
+import fetchCountries from './js/fetchCountries.js';
+import createCountryMarkup from './js/create-country-markup.js'
+import createListOfCountryMarkup from './js/create-list.js'
 
 
 const refs = {
-    input: document.querySelector(".input"),
+    input: document.querySelector("#search-box"),
     countryList: document.querySelector(".country-list"),
-    countryDesc: document.querySelector(".country-description"),
+    countryDesc: document.querySelector(".country-info"),
 }
 
-refs.input.addEventListener('input', debounce(fetchCountries, 300));
+refs.input.addEventListener('input', debounce(start, DEBOUNCE_DELAY));
 
-function fetchCountries(event) {
- 
+function start(event) {
     let name = event.target.value.trim()
-    
      if (name = "") {
         clearAll()
-    }
-    const url = `https://restcountries.com/v2/name/${name}?fields=name,capital,population,flags,languages`
-    fetch(url).then(r => {
-        if (r.status !== 200) {
-            throw new Error(r.status)
-        }
-        return r.json()
-    })
-    .then(country => {
+    } else {
+    fetchCountries(name).then(country => {
         if (country.length === 1) {
             clearAll()
             refs.countryDesc.innerHTML = createCountryMarkup(country)
@@ -38,7 +32,6 @@ function fetchCountries(event) {
         else if (country.length > 10) {
             clearAll()
             console.log("Too many matches found. Please enter a more specific name.");
-        
         }
         else {
             clearAll()
@@ -51,30 +44,6 @@ function fetchCountries(event) {
      
     })
 }
-
-
-function createCountryMarkup(data) {
-    let lang = data[0].languages.map(language => {
-        return language.name
-    })
-    let languages = lang.join(', ')
-   return `<div class="header-container">
-   <img src="${data[0].flags.svg}" class="flag" width="50" height="40">
-   <h1 class="header">${data[0].name}</h1>
-</div>
-<div class="caption-container">
-<p class="text"><span class="text-bold">Capital:</span>${data[0].capital}</p>
-<p class="text"><span class="text-bold">Population:</span>${data[0].population}</p>
-<p class="text"><span class="text-bold">Languages:</span>${languages}</p>
-</div>`
-}
-
-function createListOfCountryMarkup(data) {
-   
-    return data.map(el => {
-        return `<li class="country-item"><img src="${el.flags.svg}" class="list-img" width="40" height="30">${el.name}</li>`
-    }).join("")
- 
 }
 
 function clearAll() {
