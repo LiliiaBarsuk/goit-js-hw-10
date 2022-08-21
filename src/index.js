@@ -2,10 +2,10 @@ import './css/styles.css';
 const DEBOUNCE_DELAY = 300;
 
 import debounce from 'lodash.debounce';
-import fetchCountries from './js/fetchCountries.js';
+
 import createCountryMarkup from './js/create-country-markup.js'
 import createListOfCountryMarkup from './js/create-list.js'
-
+import fetchCountries  from './js/fetchCountries.js';
 
 const refs = {
     input: document.querySelector("#search-box"),
@@ -16,8 +16,8 @@ const refs = {
 refs.input.addEventListener('input', debounce(start, DEBOUNCE_DELAY));
 
 function start(event) {
-    let name = event.target.value.trim()
-     if (name = "") {
+    const name = event.target.value.trim()
+     if (name === "") {
         clearAll()
     } else {
     fetchCountries(name).then(country => {
